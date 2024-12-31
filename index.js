@@ -1,4 +1,5 @@
 import ProfileParser from '@wfcd/profile-parser';
+import WorldStateParser  from 'warframe-worldstate-parser';
 // const user = new ProfileParser(await profileData.text());
 import bodyParser from 'body-parser';
 import express  from 'express';
@@ -207,26 +208,35 @@ async function getUser(name) {
     return user;
   })
   .catch(err => {
-    console.log(err);
+    throw err;
   })
 }
+
+async function state(){
+  const worldstateData = await fetch('https://content.warframe.com/dynamic/worldState.php').then((data) => data.text());
+  return new WorldStateParser(worldstateData);
+}
+
+const errMsg = '没有找到该玩家/玩家已被封禁';
+const errCode = 204;
+const suerrMsg = '成功';
+const suerrCode = 200;
 
 // 个人信息
 app.get('/api/profile', (req, res) => {
   getUser(req.query.name)
       .then(user => {
-        res.json({
-          code: 200,
-          message: '成功',
+        res.status(suerrCode).json({
+          code: suerrCode,
+          message: suerrMsg,
           data: user
         });
       })
-      .catch(err => {
-        console.log(err);
-        res.status(500).json({
-          code: 500,
-          message: '没有找到该玩家',
-          error: err
+      .catch(err => {      
+        res.status(errCode).json({
+          code: errCode,
+          message: errMsg,
+          data: err
         });
       });
   });
@@ -234,18 +244,18 @@ app.get('/api/profile', (req, res) => {
   app.get('/api/stats', (req, res) => {
     getUser(req.query.name)
       .then(user => {
-        res.json({
-          code: 200,
-          message: '成功',
+        res.status(suerrCode).json({
+          code: suerrCode,
+          message: suerrMsg,
           data: user.stats
         });
       })
       .catch(err => {
         console.log(err);
-        res.status(500).json({
-          code: 500,
-          message: '没有找到该玩家',
-          error: err
+        res.status(errCode).json({
+          code: errCode,
+          message: errMsg,
+          data: err
         });
       });
   });
@@ -253,18 +263,18 @@ app.get('/api/profile', (req, res) => {
   app.get('/api/expirydate', (req, res) => {
     main(req.query.name)
       .then(user => {
-        res.json({
-          code: 200,
-          message: '成功',
+        res.status(suerrCode).json({
+          code: suerrCode,
+          message: suerrMsg,
           data: user.xpCacheExpiryDate
         });
       })
       .catch(err => {
         console.log(err);
-        res.status(500).json({
-          code: 500,
-          message: '没有找到该玩家',
-          error: err
+        res.status(errCode).json({
+          code: errCode,
+          message: errMsg,
+          data: err
         });
       });
   });
@@ -272,19 +282,35 @@ app.get('/api/profile', (req, res) => {
   app.get('/api', (req, res) => {
     getUser(req.query.name)
       .then(user => {
-        res.json({
-          code: 200,
-          message: '成功',
+        res.status(suerrCode).json({
+          code: suerrCode,
+          message: suerrMsg,
           data: user
         });
       })
       .catch(err => {
         console.log(err);
-        res.status(500).json({
-          code: 500,
-          message: '没有找到该玩家',
-          error: err
+        res.status(errCode).json({
+          code: errCode,
+          message: errMsg,
+          data: err
         });
       });
   });
+
+  app.get('/', (req, res) => {
+    state()
+      .then(data => {
+        res.status(suerrCode).json({
+          data
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(errCode).json({
+          code: errCode,
+          message: errMsg,
+      })
+    })  
+  })
 export default app;
