@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import express  from 'express';
 import cors  from'cors';
 const app = express();
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.all('*', function (req, res, next) {
@@ -19,13 +20,20 @@ app.all('*', function (req, res, next) {
 
 async function main(name) {
   const profileData = await fetch('https://content.warframe.com/dynamic/getProfileViewingData.php?n='+name);
-  const user = new ProfileParser(JSON.parse((await profileData.text())),true);
+  const textData = await profileData.text();
+  // 尝试解析 JSON
+  const jsonData = JSON.parse(textData);
+  const user = new ProfileParser(jsonData,'en', true);
+
   return user;
 }
+app.listen(3000, () => {
+  console.log('listen:3000');
+})
 app.get('/api', (req, res) => {
     main(req.query.name)
       .then(user => {
-        res.json({
+        res.status(200).json({
           code: 200,
           message: '成功',
           data: user
@@ -40,9 +48,3 @@ app.get('/api', (req, res) => {
         });
       });
   });
-app.listen(443, () => {
-    console.log('listen:443');
-})
-app.listen(80, () => {
-  console.log('listen:80');
-})
