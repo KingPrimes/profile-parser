@@ -27,13 +27,52 @@ async function main(name) {
 
   return user;
 }
-app.get('/api', (req, res) => {
+// 个人信息
+app.get('/api/profile', (req, res) => {
     main(req.query.name)
       .then(user => {
-        res.status(200).json({
+        res.json({
           code: 200,
           message: '成功',
-          data: user
+          data: user.profile
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).json({
+          code: 500,
+          message: '没有找到该玩家',
+          error: err
+        });
+      });
+  });
+  // 统计
+  app.get('/api/stats', (req, res) => {
+    main(req.query.name)
+      .then(user => {
+        res.json({
+          code: 200,
+          message: '成功',
+          data: user.stats
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).json({
+          code: 500,
+          message: '没有找到该玩家',
+          error: err
+        });
+      });
+  });
+  // 最后登录日期
+  app.get('/api/expirydate', (req, res) => {
+    main(req.query.name)
+      .then(user => {
+        res.json({
+          code: 200,
+          message: '成功',
+          data: user.xpCacheExpiryDate
         });
       })
       .catch(err => {
