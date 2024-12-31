@@ -1,4 +1,4 @@
-import ProfileParser from '@wfcd/profile-parser';
+// import ProfileParser from '@wfcd/profile-parser';
 import WorldStateParser  from 'warframe-worldstate-parser';
 // const user = new ProfileParser(await profileData.text());
 import bodyParser from 'body-parser';
@@ -19,198 +19,198 @@ app.all('*', function (req, res, next) {
     next();
   });
 
-async function main(name) {
-  const profileData = await fetch('https://content.warframe.com/dynamic/getProfileViewingData.php?n='+name);
-  const textData = await profileData.text();
-  // 尝试解析 JSON
-  const jsonData = JSON.parse(textData);
-  const user = new ProfileParser(jsonData,'en', true);  
-  return user;
-}
+// async function main(name) {
+//   const profileData = await fetch('https://content.warframe.com/dynamic/getProfileViewingData.php?n='+name);
+//   const textData = await profileData.text();
+//   // 尝试解析 JSON
+//   const jsonData = JSON.parse(textData);
+//   const user = new ProfileParser(jsonData,'en', true);  
+//   return user;
+// }
 
-async function getUser(name) {
-  return main(name)
-  .then(user =>{
-    // 使用 map 方法来创建一个新数组
-    user.profile.loadout.weaponSkins = user.profile.loadout.weaponSkins.map(wss => {
-      return {
-        ...wss,
-        item: {
-          ...wss.item,
-          i18n: {
-            zh: wss.item?.i18n?.zh           
-          },
-          patchlogs:[]
-        }
-      };
-    });
-    user.profile.loadout.suits = user.profile.loadout.suits.map(s =>{
-      const updatedComponents = Object.keys(s.item.components).reduce((acc, key) => {
-        // 为每个组件添加 'drops' 属性，并保留现有属性
-        acc[key] = {
-          ...s.item.components[key],
-          // 添加或覆盖 'drops' 属性
-          drops: {},
-        };
-        return acc;
-      }, {});
-      const config = s.configs?.map(cf => {
-        const skin = cf.skins.map(s=>{
-          return {
-            ...s,
-            item:{
-              ...s.item,
-              i18n: {
-                zh: s.item?.i18n?.zh           
-              },
-              patchlogs:[]
-            }
-          }
-        })
-        return {
-          ...cf,
-          skins: skin
-        };
-      });
-      return {
-        ...s,
-        item:{
-          ...s.item,
-          components: updatedComponents,
-          i18n: {
-            zh: s.item?.i18n?.zh           
-          },
-          patchlogs:[]
-        },        
-        configs: config        
-      }
-    });
+// async function getUser(name) {
+//   return main(name)
+//   .then(user =>{
+//     // 使用 map 方法来创建一个新数组
+//     user.profile.loadout.weaponSkins = user.profile.loadout.weaponSkins.map(wss => {
+//       return {
+//         ...wss,
+//         item: {
+//           ...wss.item,
+//           i18n: {
+//             zh: wss.item?.i18n?.zh           
+//           },
+//           patchlogs:[]
+//         }
+//       };
+//     });
+//     user.profile.loadout.suits = user.profile.loadout.suits.map(s =>{
+//       const updatedComponents = Object.keys(s.item.components).reduce((acc, key) => {
+//         // 为每个组件添加 'drops' 属性，并保留现有属性
+//         acc[key] = {
+//           ...s.item.components[key],
+//           // 添加或覆盖 'drops' 属性
+//           drops: {},
+//         };
+//         return acc;
+//       }, {});
+//       const config = s.configs?.map(cf => {
+//         const skin = cf.skins.map(s=>{
+//           return {
+//             ...s,
+//             item:{
+//               ...s.item,
+//               i18n: {
+//                 zh: s.item?.i18n?.zh           
+//               },
+//               patchlogs:[]
+//             }
+//           }
+//         })
+//         return {
+//           ...cf,
+//           skins: skin
+//         };
+//       });
+//       return {
+//         ...s,
+//         item:{
+//           ...s.item,
+//           components: updatedComponents,
+//           i18n: {
+//             zh: s.item?.i18n?.zh           
+//           },
+//           patchlogs:[]
+//         },        
+//         configs: config        
+//       }
+//     });
     
-    user.profile.loadout.secondary = user.profile.loadout.secondary.map(se=>{
-      const components = se.item.components.map(com=>{
-        return {
-          ...com,
-          drops:[]
-        }
-      })
-      return {
-        ...se,
-        item:{
-          ...se.item,
-          components: components,
-          i18n: {
-            zh: se.item?.i18n?.zh
-          }
-        }
-      }
-    });
+//     user.profile.loadout.secondary = user.profile.loadout.secondary.map(se=>{
+//       const components = se.item.components.map(com=>{
+//         return {
+//           ...com,
+//           drops:[]
+//         }
+//       })
+//       return {
+//         ...se,
+//         item:{
+//           ...se.item,
+//           components: components,
+//           i18n: {
+//             zh: se.item?.i18n?.zh
+//           }
+//         }
+//       }
+//     });
 
-    user.profile.loadout.primary = user.profile.loadout.primary.map(pr=>{
-      const config = pr.configs?.map(cf => {
-        const skin = cf.skins.map(s=>{
-          return {
-            ...s,
-            item:{
-              ...s.item,
-              i18n: {
-                zh: s.item?.i18n?.zh           
-              },
-              patchlogs:[]
-            }
-          }
-        })
-        return {
-          ...cf,
-          skins: skin
-        };
-      });
-      return {
-        ...pr,
-        item:{
-          ...pr.item,
-          i18n: {
-            zh: pr.item?.i18n?.zh
-          },
-          patchlogs:[]
-        },
-        configs: config
-      }
-    })
+//     user.profile.loadout.primary = user.profile.loadout.primary.map(pr=>{
+//       const config = pr.configs?.map(cf => {
+//         const skin = cf.skins.map(s=>{
+//           return {
+//             ...s,
+//             item:{
+//               ...s.item,
+//               i18n: {
+//                 zh: s.item?.i18n?.zh           
+//               },
+//               patchlogs:[]
+//             }
+//           }
+//         })
+//         return {
+//           ...cf,
+//           skins: skin
+//         };
+//       });
+//       return {
+//         ...pr,
+//         item:{
+//           ...pr.item,
+//           i18n: {
+//             zh: pr.item?.i18n?.zh
+//           },
+//           patchlogs:[]
+//         },
+//         configs: config
+//       }
+//     })
 
-    user.profile.loadout.melee = user.profile.loadout.melee.map(me=>{
-      const config = me.configs?.map(cf => {
-        const skin = cf.skins.map(s=>{
-          return {
-            ...s,
-            item:{
-              ...s.item,
-              i18n: {
-                zh: s.item?.i18n?.zh           
-              },
-              patchlogs:[]
-            }
-          }
-        })
-        return {
-          ...cf,
-          skins: skin
-        };
-      });
-      return {
-        ...me,
-        item:{
-          ...me.item,
-          i18n: {
-            zh: me.item?.i18n?.zh
-          },
-          patchlogs:[]
-        },
-        configs: config
-      }
-    })
+//     user.profile.loadout.melee = user.profile.loadout.melee.map(me=>{
+//       const config = me.configs?.map(cf => {
+//         const skin = cf.skins.map(s=>{
+//           return {
+//             ...s,
+//             item:{
+//               ...s.item,
+//               i18n: {
+//                 zh: s.item?.i18n?.zh           
+//               },
+//               patchlogs:[]
+//             }
+//           }
+//         })
+//         return {
+//           ...cf,
+//           skins: skin
+//         };
+//       });
+//       return {
+//         ...me,
+//         item:{
+//           ...me.item,
+//           i18n: {
+//             zh: me.item?.i18n?.zh
+//           },
+//           patchlogs:[]
+//         },
+//         configs: config
+//       }
+//     })
 
-    user.profile.loadout.xpInfo = user.profile.loadout.xpInfo
-    .sort((a,b)=> b.xp - a.xp)
-    .slice(0, 10)
-    .map(xp=>{
-      const components = xp.item?.components?.map(com=>{
-        return {
-          ...com,
-          drops:[]
-        }
-      })
-      return {
-        ...xp,
-        item: {
-          ...xp.item,
-          i18n: {
-            zh: xp.item?.i18n?.zh
-          },
-          patchlogs:[],
-          components: components
-        }
-      }
-    })
-    user.profile = {
-      ...user.profile,
-      challengeProgress: [],
-      missions:[]
-    }
-    user.stats = {
-      ...user.stats,
-      abilities:[],
-      enemies: [],
-      missions: [],
-      scans: [],
-      weapons: []
-    }
+//     user.profile.loadout.xpInfo = user.profile.loadout.xpInfo
+//     .sort((a,b)=> b.xp - a.xp)
+//     .slice(0, 10)
+//     .map(xp=>{
+//       const components = xp.item?.components?.map(com=>{
+//         return {
+//           ...com,
+//           drops:[]
+//         }
+//       })
+//       return {
+//         ...xp,
+//         item: {
+//           ...xp.item,
+//           i18n: {
+//             zh: xp.item?.i18n?.zh
+//           },
+//           patchlogs:[],
+//           components: components
+//         }
+//       }
+//     })
+//     user.profile = {
+//       ...user.profile,
+//       challengeProgress: [],
+//       missions:[]
+//     }
+//     user.stats = {
+//       ...user.stats,
+//       abilities:[],
+//       enemies: [],
+//       missions: [],
+//       scans: [],
+//       weapons: []
+//     }
 
-    return user;
-  })
-  .catch(err => {
-    throw err;
-  })
-}
+//     return user;
+//   })
+//   .catch(err => {
+//     throw err;
+//   })
+// }
 
 async function state(){
   const worldstateData = await fetch('https://content.warframe.com/dynamic/worldState.php').then((data) => data.text());
@@ -223,7 +223,7 @@ const suerrMsg = '成功';
 const suerrCode = 200;
 
 // 个人信息
-app.get('/api/profile', (req, res) => {
+/* app.get('/api/profile', (req, res) => {
   getUser(req.query.name)
       .then(user => {
         res.status(suerrCode).json({
@@ -296,12 +296,12 @@ app.get('/api/profile', (req, res) => {
           data: err
         });
       });
-  });
+  }); */
   // 获取世界状态
   app.get('/state', (req, res) => {
     state()
       .then(data => {
-        res.status(suerrCode).json({
+        res.json({
           data
         });
       })
