@@ -40,6 +40,9 @@ app.get('/api', (req, res) => {
         });
       });
   });
-app.listen(3000, () => {
-    console.log('listen:3000');
+app.listen(443, () => {
+    console.log('listen:443');
+})
+app.listen(80, () => {
+  console.log('listen:80');
 })
