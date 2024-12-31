@@ -297,7 +297,8 @@ app.get('/api/profile', (req, res) => {
         });
       });
   });
-  app.get('/', (req, res) => {
+  // 获取世界状态
+  app.get('/state', (req, res) => {
     state()
       .then(data => {
         res.status(suerrCode).json({
