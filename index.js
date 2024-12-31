@@ -217,11 +217,6 @@ async function state(){
   return new WorldStateParser(worldstateData);
 }
 
-const errMsg = '没有找到该玩家/玩家已被封禁';
-const errCode = 204;
-const suerrMsg = '成功';
-const suerrCode = 200;
-
 // 个人信息
 /* app.get('/api/profile', (req, res) => {
   getUser(req.query.name)
@@ -307,9 +302,9 @@ const suerrCode = 200;
       })
       .catch(err => {
         console.log(err);
-        res.status(errCode).json({
-          code: errCode,
-          message: errMsg,
+        res.status(500).json({
+          code: 500,
+          message: err,
       })
     })  
   })
