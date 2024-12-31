@@ -293,7 +293,7 @@ async function state(){
       });
   }); */
   // 获取世界状态
-  app.get('/state', (req, res) => {
+  app.get('/', (req, res) => {
     state()
       .then(data => {
         res.json({
