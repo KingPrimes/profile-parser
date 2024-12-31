@@ -297,7 +297,6 @@ app.get('/api/profile', (req, res) => {
         });
       });
   });
-
   app.get('/', (req, res) => {
     state()
       .then(data => {
